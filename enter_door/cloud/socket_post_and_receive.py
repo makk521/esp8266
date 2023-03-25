@@ -1,6 +1,6 @@
 import socket
 import sys
-
+import time
 
 def socket_service_data():
     # 连接
@@ -12,20 +12,29 @@ def socket_service_data():
     except socket.error as msg:
         print(msg)
         sys.exit(1)
-    print("Wait for Connection..................")
+    print("..................Wait for Connection..................")
 
     sock, addr = s.accept()
     
+    buf = sock.recv(BUFSIZ)  # 接收数据
+    buf1 = buf.decode('utf-8')  # 解码
+    print('收到坐标:', buf1)
+
+    time.sleep(2)
+    sock.send("off".encode())
+    sock.send("on".encode())
+    print('坐标已同步至玩家！')
+    
     while True:
-        # 收
-        buf = sock.recv(BUFSIZ)  # 接收数据
-        buf1 = buf.decode('utf-8')  # 解码
-        if not buf:
-            break
-        print('Received message:', buf1)
+        # # 收
+        # buf = sock.recv(BUFSIZ)  # 接收数据
+        # buf1 = buf.decode('utf-8')  # 解码
+        # if not buf:
+        #     break
+        # print('Received message:', buf1)
         # return buf
         # 发
-        buf = input("input data:")  # 输入要传输的数据
+        buf = input("提示音修改指令:")  # 输入要传输的数据  
         if not buf:
             break
         sock.send(buf.encode())  # 将要传输的数据编码发送，如果是字符数据就必须要编码发送
